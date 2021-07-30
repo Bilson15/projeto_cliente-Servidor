@@ -8,8 +8,9 @@ import java.net.Socket;
 public class Cliente {
 
 	public static void main(String[] args) throws Exception {
-		String sentenca;
-		String sentencaModificada;
+		String textoEnviado;
+		String textoServidor;
+		int status = 0;
 		BancoDados bd = new BancoDados();  // realiza conexao
 		
 		// cria o strem do teclado
@@ -22,27 +23,26 @@ public class Cliente {
 		DataOutputStream clienteParaServidor = new DataOutputStream(clienteSocket.getOutputStream());
 		BufferedReader cadeiaServidor = new BufferedReader(new InputStreamReader(clienteSocket.getInputStream()));
 		
-		// lê uma linha do teclado e coloca em sentença
-		sentenca = cadeiaUsuario.readLine();
-		
-		// envia a linha para o server
-		clienteParaServidor.writeBytes(sentenca + "\n");
-		
-		// lê uma linha do server
-		sentencaModificada = cadeiaServidor.readLine();
-		
-		// apresenta a linha do server no console
-		System.out.println("Para o servidor: " + sentencaModificada);
-		
-		//envia de retorno do server pra banco de dados
-		int status = bd.guardaMsg("INSERT INTO SOCKET (SK_NOME)" + "VALUES ('"+sentencaModificada +"')");
-		if (status == 1) {
-			System.out.println("Mensagem gravada no banco de dados");
-		}else {
-			System.out.println("Mensagem não foi gravada");
+		while(true) {	
+			// lê uma linha do teclado e coloca em sentença
+			System.out.print("Cliente : ");
+			textoEnviado = cadeiaUsuario.readLine();
+			bd.guardaMsg("INSERT INTO SOCKET (SK_MENSAGEM)" + "VALUES ('Cliente: "+textoEnviado +"')");
+
+			// envia a linha para o server
+			clienteParaServidor.writeBytes(textoEnviado + "\n");
+			
+			// lê uma linha do server
+			textoServidor = cadeiaServidor.readLine();
+			
+			// apresenta a linha do server no console
+			System.out.println("Do servidor: " + textoServidor);
+			
+			//envia de retorno do server pra banco de dados
+			bd.guardaMsg("INSERT INTO SOCKET (SK_MENSAGEM)" + "VALUES ('Servidor: "+textoServidor +"')");
+	
+
 		}
-		//fecha cliente
-		clienteSocket.close();
 	}
 
 }
