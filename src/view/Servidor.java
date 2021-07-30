@@ -9,29 +9,40 @@ import java.net.Socket;
 public class Servidor {
 
 	public static void main(String[] args) throws Exception {
-		String clienteSentenca;
-		String sentencaCaptura;
+		String textoCliente;
+		String textoEnvio;
 		
 		// cria socket de comunicação com os clientes na porta 6789
+		@SuppressWarnings("resource")
 		ServerSocket bemVindoSocket = new ServerSocket (6789);
 		
 		// espera mensagem de algum cliente e trata
-		while(true) {
+		
+            // cria o strem do teclado
+            
+			BufferedReader cadeiaServidor = new BufferedReader(new InputStreamReader(System.in)); 
+
 			//espera a conexão de algum cliente
 			Socket conexaoSocket = bemVindoSocket.accept();
 			
 			//cria strem de entra e saida com cliente que chegou
 			BufferedReader cadeiaCliente = new BufferedReader(new InputStreamReader(conexaoSocket.getInputStream()));
-			DataOutputStream servidorParaCliente = new DataOutputStream(conexaoSocket.getOutputStream());
+            DataOutputStream ServidorParaCliente = new DataOutputStream(conexaoSocket.getOutputStream());
 			
-			// lê uma linha do cliente
-			clienteSentenca = cadeiaCliente.readLine();
-			
-			// transoforma a linha em maiusculas
-			sentencaCaptura = clienteSentenca.toUpperCase() + "\n";
-			servidorParaCliente.writeBytes(sentencaCaptura);
-		}
+			while(true) {
+                // lê uma linha do cliente
+                textoCliente = cadeiaCliente.readLine();
+                System.out.println("Do cliente: " + textoCliente);
+                
+                // envia pro cliente
+                System.out.print("Server: ");
+                textoEnvio = cadeiaServidor.readLine();
+                ServidorParaCliente.writeBytes(textoEnvio + "\n");
+		    }
+		
+		
 		
 	}
 	
 }
+

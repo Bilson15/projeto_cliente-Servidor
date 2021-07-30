@@ -2,6 +2,7 @@ package view;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class BancoDados {
@@ -17,28 +18,25 @@ public class BancoDados {
 		this.senha = "358899500";  // senha
 		
 		try {
-			Class.forName("org.postgresql.Driver");  // chama o driver da biblioteca jdbc 
+		//	Class.forName("org.postgresql.Driver");  // chama o driver da biblioteca jdbc 
 			this.con = DriverManager.getConnection(url, usuario, senha); // tenta conexão com o bd passando a url o usuario e senha informada
 			System.out.println("Conexão realizada com sucesso ao banco de dados!!"); // se tiver tudo correto realiza a conexão
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace(); // se der erro na conexão retorna erro
 		}
 		
 	}
 	
-	public int guardaMsg(String sql) {
+	public void guardaMsg(String sql) {
 		
 		try {
 			// recebe um parametro String sql e envia para o banco
 			Statement stm = con.createStatement();   
-			int res = stm.executeUpdate(sql);
-			con.close();
+			stm.executeUpdate(sql);
 			// se enviar com sucesso retorna 1 para positivo
-			return res;
+	
 		} catch (Exception e) {
 			e.printStackTrace();
-			// se der erro retorna 0 para negativo
-			return 0;
 		}
 	}
 
